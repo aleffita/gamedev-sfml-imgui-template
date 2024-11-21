@@ -1,26 +1,30 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 
-#include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-int main() {
+int main()
+{
     sf::RenderWindow window(sf::VideoMode({640, 480}), "ImGui + SFML = <3");
     window.setFramerateLimit(60);
-    ImGui::SFML::Init(window);
+    if (!ImGui::SFML::Init(window))
+        return -1;
 
     sf::Clock deltaClock;
-    while (window.isOpen()) {
-        // Proccess Window Events (Close,Resize,etc...)
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.Closed) {
-                ImGui::SFML::Shutdown();
+    while (window.isOpen())
+    {
+        // Process Window Events (Close,Resize,etc...)
+        sf::Event event{};
+        while (window.pollEvent(event))
+        {
+            if ((event.type == sf::Event::Closed) ||
+                (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+            {
                 window.close();
             }
-            
+
             ImGui::SFML::ProcessEvent(window, event);
         }
 
